@@ -39,7 +39,7 @@ class App extends Component {
   render() {
     return (
       <div className="body">
-          <Maze maxX={this.state.maxX} maxY={this.state.maxY} spriteVals={this.state.spriteVals}/>
+          <Grid maxX={this.state.maxX} maxY={this.state.maxY} spriteVals={this.state.spriteVals}/>
       </div>
     );
   }
