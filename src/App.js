@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {Howl, Howler} from 'howler';
-import waterAudioFile from './resources/water.wav';
-import zombieAudioFile from './resources/zombie.wav';
-//From: "Waterfall, Large, A.wav" by InspectorJ (www.jshaw.co.uk) of Freesound.org
-import waterFallAudioFile from './resources/waterfall.wav'
+import crowAudioFile from './resources/crow.wav';
+//Crow1 from neufv of freesounds.org under Creative Commons 0 License"
 import Grid from './framework/Grid';
 import './style/App.css';
 
@@ -17,14 +14,9 @@ class App extends Component {
         spriteVals: [
             {
                 pos: this.getRandomPos(5, 1),
-                audioFile: waterFallAudioFile,
-                name: "Waterfall",
+                audioFile: crowAudioFile,
+                name: "Crow",
             },
-            {
-                pos: this.getRandomPos(5, 1),
-                audioFile: zombieAudioFile,
-                name: "Zombie",
-            }
         ],
     }
   }

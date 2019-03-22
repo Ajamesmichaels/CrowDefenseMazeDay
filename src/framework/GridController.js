@@ -19,7 +19,7 @@ class GridController extends React.Component {
     };
 
     moveDown = () => {
-        this.props.gridCallback(0, -1);
+        console.log(this);
     };
 
     arrowKeyListener = (e) => {
