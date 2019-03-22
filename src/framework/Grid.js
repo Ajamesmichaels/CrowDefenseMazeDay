@@ -86,10 +86,10 @@ class Grid extends Component {
 
     generateGameBoard() {
         let boardRows = [];
-        for(let i=0; i < this.state.maxX; i++){
+        for(let i=0; i < this.state.maxY; i++){
             let boardRow = [];
 
-            for(let j=0; j < this.state.maxY; j++) {
+            for(let j=0; j < this.state.maxX; j++) {
                 if (j === this.state.player.getComponentX() && i === this.state.player.getComponentY()){
                     boardRow.push(
                         <td>Player</td>

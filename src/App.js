@@ -6,22 +6,22 @@ import zombieAudioFile from './resources/zombie.wav';
 import waterFallAudioFile from './resources/waterfall.wav'
 import Grid from './framework/Grid';
 import './style/App.css';
-import Maze from "./games/maze/Maze";
+
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        maxX: 10,
-        maxY: 10,
+        maxX: 5,
+        maxY: 1,
         spriteVals: [
             {
-                pos: this.getRandomPos(10, 10),
+                pos: this.getRandomPos(5, 1),
                 audioFile: waterFallAudioFile,
                 name: "Waterfall",
             },
             {
-                pos: this.getRandomPos(10, 10),
+                pos: this.getRandomPos(5, 1),
                 audioFile: zombieAudioFile,
                 name: "Zombie",
             }
