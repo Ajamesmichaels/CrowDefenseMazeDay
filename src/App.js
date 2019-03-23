@@ -15,7 +15,7 @@ class App extends Component {
             {
                 pos: this.getRandomPos(5, 1),
                 audioFile: crowAudioFile,
-                name: "Crow",
+                name: "crow",
             },
         ],
     }

@@ -37,10 +37,23 @@ class Grid extends Component {
 
         if (0 <= newX && newX < this.state.maxX && 0 <= newY && newY < this.state.maxY) {
             let updatedPlayer = this.state.player.setPosition({x: newX, y: newY});
+
+            
+
             this.setState({
                 player: updatedPlayer,
             }, () => {
-                this.state.gridSprites.forEach(sprite => sprite.updateAudioPos());
+                this.state.gridSprites.forEach(function(sprite){
+                    sprite.updateAudioPos();
+
+                    if (sprite.getSpriteX()==updatedPlayer.getPlayerPosition().x &&
+                        sprite.getSpriteY()==updatedPlayer.getPlayerPosition().y &&
+                        sprite.getName()=="crow") {
+                            //ENABLE GRIDCONTROLLER DOWN TO REMOVE CROW
+                            console.log("ON CROW");
+                            console.log(this.gridSprites);
+                        }
+                });
             });
         }
     };
