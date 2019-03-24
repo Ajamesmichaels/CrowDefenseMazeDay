@@ -22,6 +22,7 @@ class Grid extends Component {
                     playerPositionCallback: this.getPlayerPosition,
                 })),
         };
+        
     }
 
     setPlayerPosition = (pos) => {
@@ -37,25 +38,18 @@ class Grid extends Component {
 
         if (0 <= newX && newX < this.state.maxX && 0 <= newY && newY < this.state.maxY) {
             let updatedPlayer = this.state.player.setPosition({x: newX, y: newY});
-
-            
-
             this.setState({
                 player: updatedPlayer,
             }, () => {
                 this.state.gridSprites.forEach(function(sprite){
                     sprite.updateAudioPos();
-
-                    if (sprite.getSpriteX()==updatedPlayer.getPlayerPosition().x &&
-                        sprite.getSpriteY()==updatedPlayer.getPlayerPosition().y &&
-                        sprite.getName()=="crow") {
-                            //ENABLE GRIDCONTROLLER DOWN TO REMOVE CROW
-                            console.log("ON CROW");
-                            console.log(this.gridSprites);
-                        }
                 });
             });
         }
+    };
+
+    action = () => {
+        this.removeGridSprite();
     };
 
     addGridSprite = (audioFile, pos, name) => {
@@ -67,6 +61,29 @@ class Grid extends Component {
                 playerPositionCallback: this.getPlayerPosition,
             }))
         })
+    };
+
+    setGridSprites = (newArraySprites) => {
+        this.setState({gridSprites: newArraySprites.map(elm => new GridSprite(
+            {
+                pos: elm.getGridSpritePosition(),
+                filename: elm.getAudioFile(),
+                name: elm.getName(),
+                playerPositionCallback: this.getPlayerPosition,
+            }))});
+    }
+
+    removeGridSprite = () => {
+        let sprites=[...this.state.gridSprites];
+        sprites.forEach(function(currentSprite, index, arr) {
+            if (currentSprite.isInteractable()===true) {
+                arr.splice(index,1);
+            }
+            sprites=arr;
+        });
+      
+        this.setGridSprites(sprites);
+
     };
 
     getGridSprites = () => {
@@ -140,7 +157,7 @@ class Grid extends Component {
     render() {
         return (
             <div>
-                <GridController gridCallback={this.updatePlayerPosition}/>
+                <GridController gridCallback={this.updatePlayerPosition} doAction={this.action}/>
                 <table>
                     <tbody>
                         {this.generateGameBoard()}

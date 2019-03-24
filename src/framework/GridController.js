@@ -6,10 +6,6 @@ class GridController extends React.Component {
         super(props)
     }
 
-    moveUp = () => {
-        this.props.gridCallback(0, 1);
-    };
-
     moveLeft = () => {
         this.props.gridCallback(-1, 0);
     };
@@ -18,8 +14,8 @@ class GridController extends React.Component {
         this.props.gridCallback(1, 0);
     };
 
-    moveDown = () => {
-        console.log(this);
+    doAction = () => {
+        this.props.doAction();
     };
 
     arrowKeyListener = (e) => {
@@ -29,22 +25,16 @@ class GridController extends React.Component {
                 this.moveLeft();
                 break;
             case 38:
-                this.moveDown();
+                this.doAction();
                 break;
             case 39:
                 this.moveRight();
                 break;
-            case 40:
-                this.moveUp();
-                break;
-            case 87:
-                this.moveDown();
+            case 87:    
+                this.doAction();
                 break;
             case 65:
                 this.moveLeft();
-                break;
-            case 83:
-                this.moveUp();
                 break;
             case 68:
                 this.moveRight();
