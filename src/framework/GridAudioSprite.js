@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
-import { Howl } from 'howler';
+import React from 'react';
+import {Howl} from 'howler';
 import uuidv4 from 'uuidv4';
 
-class GridSprite extends Component {
+class GridAudioSprite extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             playerPositionCallback: props.playerPositionCallback,
             x: props.pos.x,
             y: props.pos.y,
-            audiofile:props.filename,
             audio: new Howl({
                 src: [props.filename],
                 loop: true,
@@ -35,19 +34,15 @@ class GridSprite extends Component {
         }, this.updateAudioPos())
     };
 
-    isInteractable = () => {
-        let playerPosition = this.state.playerPositionCallback();
-        if (playerPosition.x===this.state.x && playerPosition.y===this.state.y) {
-            return true;
-        } else {
-            return false;
-        }
+    setLoop = (bool) => {
+        this.audio.loop(bool);
     };
+
 
     getGridSpritePosition = () => {
         return {
-            x: this.state.x,
-            y: this.state.y,
+            x : this.state.x,
+            y : this.state.y,
         }
     };
 
@@ -62,10 +57,6 @@ class GridSprite extends Component {
     getName = () => {
         return this.state.name;
     };
-
-    getAudioFile = () => {
-        return this.state.audiofile;
-    }
 
     updateAudioPos = () => {
         let playerPosition = this.state.playerPositionCallback();
@@ -85,13 +76,13 @@ class GridSprite extends Component {
         this.state.audio.stop();
     };
 
-    componentWillUnmount() {
+    componentWillUnmount(){
         this.state.audio.unload();
     }
 
-    toString() {
-        return `${this.state.name} : (${this.state.x}, ${this.state.y})`;
+    toString(){
+        return `${ this.state.name } : (${this.state.x}, ${this.state.y})`;
     }
 }
 
-export default GridSprite;
+export default GridAudioSprite;

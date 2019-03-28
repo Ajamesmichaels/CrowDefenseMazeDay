@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import crowAudioFile from './resources/crow.wav';
-//Crow1 from neufv of freesounds.org under Creative Commons 0 License"
-import Grid from './framework/Grid';
 import './style/App.css';
-
+import Grid from "./framework/Grid";
 
 class App extends Component {
   constructor(props) {
@@ -15,12 +13,12 @@ class App extends Component {
             {
                 pos: this.getRandomPos(5, 1),
                 audioFile: crowAudioFile,
-                name: "crow",
+                name: "Crow",
             },
             {
               pos: this.getRandomPos(5, 1),
               audioFile: crowAudioFile,
-              name: "crow",
+              name: "Crow",
           },
         ],
     }
@@ -36,6 +34,7 @@ class App extends Component {
   render() {
     return (
       <div className="body">
+          {/*<MazeComponent maxX={this.state.maxX} maxY={this.state.maxY}/>*/}
           <Grid maxX={this.state.maxX} maxY={this.state.maxY} spriteVals={this.state.spriteVals}/>
       </div>
     );

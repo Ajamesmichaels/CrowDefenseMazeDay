@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Player from './Player.js';
-import GridSprite from './GridSprite.js';
+import GridAudioSprite from './GridAudioSprite.js';
 import GridController from "./GridController";
+import GridCell from "./GridCell";
 
 import '../style/Grid.css';
+import MazeCell from "../games/maze/MazeCell";
 
 
 class Grid extends Component {
@@ -13,8 +15,9 @@ class Grid extends Component {
         this.state = {
             maxX: props.maxX,
             maxY: props.maxY,
-            player: new Player({x: 0,y: 0}),
-            gridSprites: this.props.spriteVals.map(elm => new GridSprite(
+            player: new Player({ x: 0, y: 0 }),
+            grid: this.initializeGrid(props.maxX, props.maxY),
+            gridSprites: this.props.spriteVals.map(elm => new GridAudioSprite(
                 {
                     pos: elm.pos,
                     filename: elm.audioFile,
@@ -22,68 +25,72 @@ class Grid extends Component {
                     playerPositionCallback: this.getPlayerPosition,
                 })),
         };
-        
+
+        this.addItemsToGrid();
     }
 
-    setPlayerPosition = (pos) => {
-      this.state.player.setPosition(pos, () => {
-          this.state.gridSprites.forEach(sprite => sprite.updateAudioPos());
-      });
+    /**
+     * Creates a 2D array that represents the grid
+     * @param x width
+     * @param y height
+     * @returns any[] 2D array object grid
+     */
+    initializeGrid = (x, y) => {
+        let grid = new Array(x);
+
+        for (let i = 0; i < x; i++) {
+            grid[i] = new Array(y);
+            for (let j = 0; j < y; j++) {
+                grid[i][j] = new GridCell(i, j);
+            }
+        }
+
+        return grid;
     };
 
+    setPlayerPosition = (pos) => {
+        this.state.player.setPosition(pos, () => {
+            this.state.gridSprites.forEach(sprite => sprite.updateAudioPos());
+        });
+    };
+
+    /**
+     * Updates the player position in the state and on the board
+     * @param deltaX
+     * @param deltaY
+     */
     updatePlayerPosition = (deltaX, deltaY) => {
         let playerPosition = this.state.player.getPlayerPosition();
         let newX = playerPosition.x + deltaX;
         let newY = playerPosition.y + deltaY;
 
         if (0 <= newX && newX < this.state.maxX && 0 <= newY && newY < this.state.maxY) {
-            let updatedPlayer = this.state.player.setPosition({x: newX, y: newY});
+            let updatedPlayer = this.state.player.setPosition({ x: newX, y: newY });
+            let updatedGrid = this.state.grid.map(function (arr) {
+                return arr.slice();
+            });
+
+            updatedGrid[playerPosition.x][playerPosition.y].removeObject(this.state.player);
+            updatedGrid[newX][newY].addObjects(updatedPlayer);
+
             this.setState({
                 player: updatedPlayer,
+                grid: updatedGrid,
             }, () => {
-                this.state.gridSprites.forEach(function(sprite){
-                    sprite.updateAudioPos();
-                });
+                this.state.gridSprites.forEach(sprite => sprite.updateAudioPos());
             });
         }
     };
 
-    action = () => {
-        this.removeGridSprite();
-    };
-
     addGridSprite = (audioFile, pos, name) => {
         this.setState({
-            gridSprites: this.state.gridSprites.concat(new GridSprite({
+            gridSprites: this.state.gridSprites.concat(new GridAudioSprite({
                 pos: pos,
                 filename: audioFile,
                 name: name,
                 playerPositionCallback: this.getPlayerPosition,
             }))
         })
-    };
-
-    setGridSprites = (newArraySprites) => {
-        this.setState({gridSprites: newArraySprites.map(elm => new GridSprite(
-            {
-                pos: elm.getGridSpritePosition(),
-                filename: elm.getAudioFile(),
-                name: elm.getName(),
-                playerPositionCallback: this.getPlayerPosition,
-            }))});
-    }
-
-    removeGridSprite = () => {
-        let sprites=[...this.state.gridSprites];
-        sprites.forEach(function(currentSprite, index, arr) {
-            if (currentSprite.isInteractable()===true) {
-                arr.splice(index,1);
-            }
-            sprites=arr;
-        });
-      
-        this.setGridSprites(sprites);
-
     };
 
     getGridSprites = () => {
@@ -102,41 +109,64 @@ class Grid extends Component {
         this.state.gridSprites.forEach(sprite => sprite.playAudio());
     };
 
-
-
-    componentDidMount(){
+    componentDidMount() {
         this.initAudio();
     }
 
-    findMatchingSprite = (x, y) => {
-        return this.state.gridSprites.find(function(sprite) {
-            return sprite.getSpriteX() === x && sprite.getSpriteY() === y;
-        });
+    findMatchingSprites = (x, y) => {
+        return this.state.grid[x][y].getObjects();
     };
+
+    addItemsToGrid = () => {
+        let playerPosition = this.state.player.getPlayerPosition();
+        this.state.grid[playerPosition.x][playerPosition.y].addObjects(this.state.player);
+        this.state.gridSprites.forEach(
+            sprite =>
+                this.state.grid[sprite.getSpriteX()][sprite.getSpriteY()].addObjects(sprite)
+        );
+    };
+
+    doAction = () => {
+        let playerPosition = this.state.player.getPlayerPosition();
+        console.log(playerPosition);
+        let currentSprites = this.findMatchingSprites(playerPosition.x, playerPosition.y);
+        let grid = this.state.grid;
+        let updatedGridSprites = this.state.gridSprites
+
+        currentSprites.forEach(function (sprite) {
+            if (sprite.getName() === "Crow") {
+                grid[playerPosition.x][playerPosition.y].removeObject(sprite);
+                sprite.componentWillUnmount();
+                let index = updatedGridSprites.indexOf(sprite);
+                updatedGridSprites = updatedGridSprites.splice(index, 1);
+            }
+        });
+        this.setState({
+            GridSprites: updatedGridSprites,
+        });
+    }
 
     generateGameBoard() {
         let boardRows = [];
-        for(let i=0; i < this.state.maxY; i++){
+        for (let i = 0; i < this.state.grid.length; i++) {
             let boardRow = [];
 
-            for(let j=0; j < this.state.maxX; j++) {
-                if (j === this.state.player.getComponentX() && i === this.state.player.getComponentY()){
-                    boardRow.push(
-                        <td>Player</td>
-                    );
-
-                    continue;
-                }
-
-                let sprite = this.findMatchingSprite(j, i);
-
-                if (sprite) {
-                    boardRow.push(
-                        <td>{sprite.getName()}</td>
-                    )
+            for (let j = 0; j < this.state.grid[i].length; j++) {
+                if (this.state.grid[i][j].objects.length !== 0) {
+                    let objects = this.state.grid[i][j].objects;
+                    if (objects.length === 1) {
+                        boardRow.push(
+                            <td>{objects[0].getName()}</td>
+                        );
+                    } else if (objects.length > 1) {
+                        let content = objects.map(object => object.getName());
+                        boardRow.push(
+                            <td>{content.join("\n")}</td>
+                        );
+                    }
                 } else {
                     boardRow.push(
-                        <td/>
+                        <td />
                     );
                 }
 
@@ -157,7 +187,7 @@ class Grid extends Component {
     render() {
         return (
             <div>
-                <GridController gridCallback={this.updatePlayerPosition} doAction={this.action}/>
+                <GridController gridCallback={this.updatePlayerPosition} spaceBarCallback={this.doAction} />
                 <table>
                     <tbody>
                         {this.generateGameBoard()}
