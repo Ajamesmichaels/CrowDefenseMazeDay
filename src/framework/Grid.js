@@ -6,6 +6,7 @@ import GridCell from "./GridCell";
 
 import '../style/Grid.css';
 import MazeCell from "../games/maze/MazeCell";
+import GridCropSprite from './GridCropSprite.js';
 
 
 class Grid extends Component {
@@ -16,7 +17,6 @@ class Grid extends Component {
             maxX: props.maxX,
             maxY: props.maxY,
             player: new Player({ x: 0, y: 0 }),
-            grid: this.initializeGrid(props.maxX, props.maxY),
             gridSprites: this.props.spriteVals.map(elm => new GridAudioSprite(
                 {
                     pos: elm.pos,
@@ -24,6 +24,7 @@ class Grid extends Component {
                     name: elm.name,
                     playerPositionCallback: this.getPlayerPosition,
                 })),
+            grid: this.initializeGrid(props.maxX, props.maxY),
         };
 
         this.addItemsToGrid();
@@ -42,6 +43,7 @@ class Grid extends Component {
             grid[i] = new Array(y);
             for (let j = 0; j < y; j++) {
                 grid[i][j] = new GridCell(i, j);
+
             }
         }
 
@@ -93,6 +95,16 @@ class Grid extends Component {
         })
     };
 
+    addCrop = (pos, name) => {
+        this.setState({
+            gridSprites: this.state.gridSprites.concat(new GridCropSprite({
+                pos: pos,
+                name: name,
+                playerPositionCallback: this.getPlayerPosition,
+            }))
+        })
+    }
+
     getGridSprites = () => {
         return this.state.gridSprites;
     };
@@ -139,7 +151,7 @@ class Grid extends Component {
                 sprite.componentWillUnmount();
                 let index = updatedGridSprites.indexOf(sprite);
                 updatedGridSprites = updatedGridSprites.splice(index, 1);
-            }
+            } 
         });
         this.setState({
             GridSprites: updatedGridSprites,
@@ -147,6 +159,7 @@ class Grid extends Component {
     }
 
     generateGameBoard() {
+
         let boardRows = [];
         for (let i = 0; i < this.state.grid.length; i++) {
             let boardRow = [];
