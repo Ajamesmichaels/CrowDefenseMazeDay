@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import crowAudioFile from './resources/crow.wav';
-
 import './style/App.css';
 import Grid from "./framework/Grid";
 
@@ -22,6 +21,12 @@ class App extends Component {
               name: "Crow",
           },
         ],
+        cropVals: [
+          {
+            pos: {x:0,y:0},
+            name:"Crop",
+          },
+        ],
     }
 
   }
@@ -37,7 +42,7 @@ class App extends Component {
     return (
       <div className="body">
           {/*<MazeComponent maxX={this.state.maxX} maxY={this.state.maxY}/>*/}
-          <Grid maxX={this.state.maxX} maxY={this.state.maxY} spriteVals={this.state.spriteVals}/>
+          <Grid maxX={this.state.maxX} maxY={this.state.maxY} spriteVals={this.state.spriteVals} cropVals={this.state.cropVals}/>
       </div>
     );
   }

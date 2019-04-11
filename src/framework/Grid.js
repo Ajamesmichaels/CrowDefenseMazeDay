@@ -17,13 +17,22 @@ class Grid extends Component {
             maxX: props.maxX,
             maxY: props.maxY,
             player: new Player({ x: 0, y: 0 }),
-            gridSprites: this.props.spriteVals.map(elm => new GridAudioSprite(
+            gridSprites: this.props.spriteVals.map(
+                elm => new GridAudioSprite(
                 {
                     pos: elm.pos,
                     filename: elm.audioFile,
                     name: elm.name,
                     playerPositionCallback: this.getPlayerPosition,
-                })),
+                })
+                ),
+            gridCrops: this.props.cropVals.map(elm => new GridCropSprite(
+                {
+                    pos:elm.pos, 
+                    name:elm.name,
+                    playerPositionCallback: this.getPlayerPosition,
+                })
+                ),
             grid: this.initializeGrid(props.maxX, props.maxY),
         };
 
@@ -95,16 +104,6 @@ class Grid extends Component {
         })
     };
 
-    addCrop = (pos, name) => {
-        this.setState({
-            gridSprites: this.state.gridSprites.concat(new GridCropSprite({
-                pos: pos,
-                name: name,
-                playerPositionCallback: this.getPlayerPosition,
-            }))
-        })
-    }
-
     getGridSprites = () => {
         return this.state.gridSprites;
     };
@@ -136,6 +135,8 @@ class Grid extends Component {
             sprite =>
                 this.state.grid[sprite.getSpriteX()][sprite.getSpriteY()].addObjects(sprite)
         );
+        this.state.gridCrops.forEach(crop =>
+            this.state.grid[crop.getSpriteX()][crop.getSpriteY()].addObjects(crop));
     };
 
     doAction = () => {
