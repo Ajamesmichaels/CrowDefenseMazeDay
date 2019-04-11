@@ -1,7 +1,7 @@
 import React from 'react';
 import {Howl} from 'howler';
 import uuidv4 from 'uuidv4';
-import cropBareSound from '../resources/win-trumpets.mp3'
+import cropBareSound from '../resources/walkingOnDirt.wav'
 const growthStage = {
     BARE: "bare", 
     GROW: "grow",

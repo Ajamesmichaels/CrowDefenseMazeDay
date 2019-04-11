@@ -84,12 +84,19 @@ class Grid extends Component {
             updatedGrid[playerPosition.x][playerPosition.y].removeObject(this.state.player);
             updatedGrid[newX][newY].addObjects(updatedPlayer);
 
+            this.findMatchingSprites(newX,newY).forEach(function(sprite){
+                if (sprite.getName()==="Crop") {
+                    sprite.playAudio();
+                }
+            });
+            
             this.setState({
                 player: updatedPlayer,
                 grid: updatedGrid,
             }, () => {
                 this.state.gridSprites.forEach(sprite => sprite.updateAudioPos());
             });
+            
         }
     };
 
